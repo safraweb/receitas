@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChefAI - Receitas Personalizadas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-reverse': 'float-reverse 8s ease-in-out infinite',
+                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'float-reverse': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(20px)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #6e8efb 0%, #a777e3 50%, #f86a6a 100%);
+        }
+        .recipe-card {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .nav-glass {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-900 text-white font-space">
+    <!-- Navbar futurista -->
+    <nav class="nav-glass fixed w-full z-50 py-4 px-6 shadow-lg">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span class="text-xl font-bold bg-clip-text text-transparent gradient-bg">ChefAI</span>
+            </div>
+            <button id="donate-btn" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full font-medium hover:scale-105 transition-transform shadow-lg">
+                Doar via PIX
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full opacity-20">
+            <div class="absolute top-20 left-10 w-40 h-40 bg-purple-500 rounded-full filter blur-3xl opacity-70 animate-float"></div>
+            <div class="absolute bottom-10 right-10 w-60 h-60 bg-pink-500 rounded-full filter blur-3xl opacity-70 animate-float-reverse"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                        <span class="bg-clip-text text-transparent gradient-bg">Receitas Sob Demanda</span><br>
+                        Geradas por IA
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-8">
+                        Diga o que você tem na geladeira e receba receitas personalizadas em segundos!
+                    </p>
+                    <button id="generate-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Gerar Receita Agora
+                    </button>
+                </div>
+                <div class="relative">
+                    <div class="recipe-card rounded-2xl p-8 shadow-2xl border border-gray-700 transform rotate-3 animate-pulse-slow">
+                        <h3 class="text-2xl font-bold mb-4 text-purple-300">Sugestão do ChefAI</h3>
+                        <p class="text-gray-200 mb-2"><span class="font-bold">Ingredientes:</span> Frango, arroz, brócolis, alho</p>
+                        <p class="text-gray-200"><span class="font-bold">Receita:</span> Refogue o alho, acrescente o frango, depois o arroz e finalize com brócolis no vapor.</p>
+                    </div>
+                    <div class="recipe-card absolute -bottom-10 -left-10 rounded-2xl p-6 shadow-2xl border border-gray-700 w-64 transform -rotate-6 z-0 opacity-70">
+                        <h3 class="text-xl font-bold mb-2 text-pink-300">Outra Opção</h3>
+                        <p class="text-sm text-gray-300">Frango ao curry com arroz basmati</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulário de Geração de Receitas -->
+    <section class="py-20 px-6 bg-gray-800 bg-opacity-50">
+        <div class="max-w-4xl mx-auto">
+            <div class="recipe-card rounded-2xl p-8 shadow-2xl border border-gray-700">
+                <h2 class="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent gradient-bg">Crie Sua Receita</h2>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-300 mb-2">Quais ingredientes você tem?</label>
+                    <textarea id="ingredients-input" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500" rows="3" placeholder="Ex: frango, arroz, cebola, alho, tomate..."></textarea>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-300 mb-2">Preferências ou restrições?</label>
+                    <input id="preferences-input" type="text" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: low carb, sem lactose, vegetariano...">
+                </div>
+                
+                <div class="flex justify-center">
+                    <button id="generate-recipe-btn" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full font-bold hover:scale-105 transition-transform shadow-lg">
+                        Gerar Receita Personalizada
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading State -->
+    <section id="recipe-loading" class="py-20 px-6 hidden">
+        <div class="max-w-4xl mx-auto">
+            <div class="recipe-card rounded-2xl p-8 shadow-2xl border border-gray-700 text-center">
+                <div class="flex justify-center mb-6">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                </div>
+                <h3 class="text-2xl font-bold text-purple-300">Gerando sua receita...</h3>
+                <p class="text-gray-300 mt-2">Nossa IA está criando uma receita especial para você!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultado da Receita -->
+    <section id="recipe-result" class="py-20 px-6 hidden">
+        <div class="max-w-4xl mx-auto">
+            <div class="recipe-card rounded-2xl p-8 shadow-2xl border border-gray-700">
+                <h2 class="text-3xl font-bold mb-6 text-center text-purple-300">Sua Receita Personalizada</h2>
+                <div id="recipe-content" class="text-gray-200">
+                    <!-- Aqui será exibida a receita gerada -->
+                </div>
+                <div class="mt-8 flex justify-center">
+                    <button id="donate-after-btn" class="px-6 py-2 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full font-medium hover:scale-105 transition-transform shadow-lg">
+                        Apoie nosso trabalho via PIX
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal PIX -->
+    <div id="pix-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="recipe-card rounded-2xl p-8 max-w-md w-full mx-4 relative">
+            <button id="close-pix-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <h3 class="text-2xl font-bold mb-4 text-center text-purple-300">Doação via PIX</h3>
+            <p class="text-gray-300 mb-6 text-center">Escaneie o QR Code ou copie a chave PIX para apoiar nosso trabalho!</p>
+            
+            <div class="flex justify-center mb-6">
+                <div class="bg-white p-4 rounded-lg">
+                    <!-- QR Code Placeholder - substitua por seu QR Code real -->
+                    <div class="w-48 h-48 bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-500">QR Code PIX</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-300 mb-2">Chave PIX (copiar e colar):</label>
+                <div class="flex">
+                    <input id="pix-key" type="text" readonly value="123e4567-e12b-12d1-a456-426655440000" class="flex-1 bg-gray-700 bg-opacity-50 border border-gray-600 rounded-l-lg px-4 py-2 focus:outline-none text-gray-200">
+                    <button id="copy-pix-btn" class="px-4 bg-purple-600 hover:bg-purple-700 rounded-r-lg">
+                        Copiar
+                    </button>
+                </div>
+            </div>
+            
+            <p class="text-sm text-gray-400 text-center">Obrigado por apoiar nosso trabalho! Sua doação nos ajuda a continuar criando receitas incríveis.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos da UI
+            const donateBtn = document.getElementById('donate-btn');
+            const donateAfterBtn = document.getElementById('donate-after-btn');
+            const pixModal = document.getElementById('pix-modal');
+            const closePixModal = document.getElementById('close-pix-modal');
+            const copyPixBtn = document.getElementById('copy-pix-btn');
+            const pixKey = document.getElementById('pix-key');
+            const generateBtn = document.getElementById('generate-btn');
+            const generateRecipeBtn = document.getElementById('generate-recipe-btn');
+            const ingredientsInput = document.getElementById('ingredients-input');
+            const preferencesInput = document.getElementById('preferences-input');
+            const recipeResult = document.getElementById('recipe-result');
+            const recipeLoading = document.getElementById('recipe-loading');
+            const recipeContent = document.getElementById('recipe-content');
+
+            // Configurações da API DeepSeek
+            const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+            // EM PRODUÇÃO, USE UM BACKEND PARA NÃO EXPOR SUA CHAVE
+            const DEEPSEEK_API_KEY = 'sk-305deef7f125474795071bff199f47e5'; 
+            
+            // Abrir modal PIX
+            donateBtn.addEventListener('click', () => pixModal.classList.remove('hidden'));
+            donateAfterBtn.addEventListener('click', () => pixModal.classList.remove('hidden'));
+            
+            // Fechar modal PIX
+            closePixModal.addEventListener('click', () => pixModal.classList.add('hidden'));
+            
+            // Copiar chave PIX
+            copyPixBtn.addEventListener('click', () => {
+                pixKey.select();
+                document.execCommand('copy');
+                copyPixBtn.textContent = 'Copiado!';
+                setTimeout(() => {
+                    copyPixBtn.textContent = 'Copiar';
+                }, 2000);
+            });
+            
+            // Gerar receita com DeepSeek
+            async function generateRecipe() {
+                const ingredients = ingredientsInput.value.trim();
+                const preferences = preferencesInput.value.trim();
+                
+                if (!ingredients) {
+                    alert('Por favor, informe pelo menos alguns ingredientes!');
+                    return;
+                }
+                
+                // Mostrar estado de carregamento
+                recipeResult.classList.add('hidden');
+                recipeLoading.classList.remove('hidden');
+                window.scrollTo({
+                    top: recipeLoading.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+                
+                try {
+                    // Montar o prompt para o DeepSeek
+                    const prompt = `Você é um chef de cozinha profissional. Crie uma receita detalhada usando principalmente: ${ingredients}. ${
+                        preferences ? `Considere: ${preferences}.` : ''
+                    } Inclua: 1) Título criativo, 2) Lista de ingredientes com quantidades, 3) Modo de preparo passo a passo, 4) Dicas de servir. Formate em HTML com tags <h3>, <p>, <ul>/<ol>.`;
+                    
+                    // Chamada para a API do DeepSeek
+                    const response = await fetch(DEEPSEEK_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: "deepseek-chat",
+                            messages: [
+                                {
+                                    role: "system",
+                                    content: "Você é um assistente culinário especializado em criar receitas com ingredientes disponíveis."
+                                },
+                                {
+                                    role: "user",
+                                    content: prompt
+                                }
+                            ],
+                            temperature: 0.7,
+                            max_tokens: 2000
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error?.message || 'Erro ao gerar receita');
+                    }
+                    
+                    // Extrair o conteúdo gerado
+                    const generatedRecipe = data.choices[0]?.message?.content;
+                    
+                    // Exibir o resultado
+                    recipeContent.innerHTML = generatedRecipe || '<p>Não foi possível gerar a receita. Tente novamente.</p>';
+                    
+                    // Esconder loading e mostrar resultado
+                    recipeLoading.classList.add('hidden');
+                    recipeResult.classList.remove('hidden');
+                    
+                    window.scrollTo({
+                        top: recipeResult.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                } catch (error) {
+                    console.error('Erro:', error);
+                    recipeContent.innerHTML = `<p class="text-red-400">Erro ao gerar receita: ${error.message}</p>`;
+                    recipeLoading.classList.add('hidden');
+                    recipeResult.classList.remove('hidden');
+                }
+            }
+            
+            // Event listeners
+            generateBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: document.querySelector('section:nth-of-type(2)').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+            
+            generateRecipeBtn.addEventListener('click', generateRecipe);
+            
+            // Permitir submit com Enter no textarea
+            ingredientsInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    generateRecipe();
+                }
+            });
+            
+            // Fechar modal ao clicar fora
+            pixModal.addEventListener('click', (e) => {
+                if (e.target === pixModal) {
+                    pixModal.classList.add('hidden');
+                }
+            });
+
+            // Salvar receitas no localStorage
+            function saveRecipeToHistory(recipe) {
+                const recipes = JSON.parse(localStorage.getItem('recipeHistory') || [];
+                recipes.unshift({
+                    content: recipe,
+                    date: new Date().toISOString()
+                });
+                localStorage.setItem('recipeHistory', JSON.stringify(recipes.slice(0, 10)));
+            }
+        });
+    </script>
+</body>
+</html>
